@@ -19,6 +19,8 @@ those errors. There are three types of custom errors handled here:
 
 Do the following to customize these error messages.
 
+## Show Authentication Failure Reason in The Response
+
 Add the following properties to the `deployment.toml` file found in the `<IS_HOME>/repository/conf` folder and enable the authenticator to be able to customize error messages.
 
 ``` toml
@@ -32,4 +34,28 @@ The following query parameters are sent to the web application from authenticati
 -   failedUsername
 -   remainingAttempts
 
-The error messages can be customized based on these query parameters in the jsp files as in  `         authenticationendpoint/login.jsp        ` 
+The error messages can be customized based on these query parameters in the jsp files as in  `         authenticationendpoint/login.jsp        `
+
+### Mask the Error Response values
+
+Mask the **user does not exist** error code **(17001)** with the
+**invalid credentials** error code **(17002)**. Set
+`maskUserNotExistsErrorCode` to `true` in the
+`<IS_HOME>/repository/conf/deployment.toml` file.
+```toml
+[authentication.authenticator.basic.parameters] 
+showAuthFailureReason = true
+maskUserNotExistsErrorCode = true 
+```
+
+To omit error response parameters add the error parameters to be omitted
+to `errorParamsToOmit` in the
+`<IS_HOME>/repository/conf/deployment.toml` file. Applicable values
+`errorCode,failedUsername,remainingAttempts,lockedReason`. By
+default no error params will be omitted.
+
+```toml
+[authentication.authenticator.basic.parameters] 
+showAuthFailureReason = true
+errorParamsToOmit = "failedUsername,remainingAttempts" 
+```
